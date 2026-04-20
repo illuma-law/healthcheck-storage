@@ -1,12 +1,11 @@
 {
     "name": "illuma-law/healthcheck-storage",
-    "description": "Focused storage extension health check for Spatie's Laravel Health package.",
+    "description": "Focused storage health check for Spatie's Laravel Health package.",
     "keywords": [
         "illuma-law",
         "laravel",
         "health",
-        "storage",
-        "postgres"
+        "storage"
     ],
     "homepage": "https://github.com/illuma-law/healthcheck-storage",
     "license": "MIT",
