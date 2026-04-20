@@ -8,7 +8,7 @@ use Spatie\Health\Enums\Status;
 
 it('succeeds when configured disks are writable', function () {
     config()->set('filesystems.disks.local', ['driver' => 'local']);
-    
+
     $mockDisk = Mockery::mock();
     $mockDisk->shouldReceive('put')->once()->andReturn(true);
     $mockDisk->shouldReceive('get')->once()->andReturn('ok');
@@ -26,7 +26,7 @@ it('succeeds when configured disks are writable', function () {
 
 it('fails when a disk is not writable', function () {
     config()->set('filesystems.disks.local', ['driver' => 'local']);
-    
+
     $mockDisk = Mockery::mock();
     $mockDisk->shouldReceive('put')->once()->andThrow(new Exception('Disk full'));
 

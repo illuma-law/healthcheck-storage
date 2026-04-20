@@ -16,7 +16,7 @@ final class StorageDiskWritabilityCheck extends Check
     protected ?array $disks = null;
 
     /**
-     * @param array<string> $disks
+     * @param  array<string>  $disks
      */
     public function disks(array $disks): self
     {
@@ -41,10 +41,11 @@ final class StorageDiskWritabilityCheck extends Check
 
             if (config("filesystems.disks.{$diskName}") === null) {
                 $skippedUnknown[] = $diskName;
+
                 continue;
             }
 
-            $path = 'health/.probe-' . uniqid('', true);
+            $path = 'health/.probe-'.uniqid('', true);
             $payload = 'ok';
 
             try {
@@ -54,34 +55,35 @@ final class StorageDiskWritabilityCheck extends Check
 
                 if ($disk->get($path) !== $payload) {
                     $errors[] = "{$diskName}: read mismatch";
+
                     continue;
                 }
 
                 $disk->delete($path);
                 $latencies[$diskName] = round((microtime(true) - $started) * 1000, 2);
             } catch (Throwable $e) {
-                $errors[] = "{$diskName}: " . $e->getMessage();
+                $errors[] = "{$diskName}: ".$e->getMessage();
             }
         }
 
         $result = Result::make()->meta([
-            'write_read_delete_ms'  => $latencies,
+            'write_read_delete_ms' => $latencies,
             'skipped_unknown_disks' => $skippedUnknown,
         ]);
 
         if ($errors !== []) {
-            return $result->failed('Disk writability issues: ' . implode('; ', $errors));
+            return $result->failed('Disk writability issues: '.implode('; ', $errors));
         }
 
         if ($latencies === []) {
             return (new Result(Status::skipped(), 'No configured disks were available to probe.'))
                 ->meta([
-                    'write_read_delete_ms'  => [],
+                    'write_read_delete_ms' => [],
                     'skipped_unknown_disks' => $skippedUnknown,
                 ])
                 ->shortSummary('Skipped');
         }
 
-        return $result->ok('Configured disks are writable.')->shortSummary(count($latencies) . ' disk(s)');
+        return $result->ok('Configured disks are writable.')->shortSummary(count($latencies).' disk(s)');
     }
 }
