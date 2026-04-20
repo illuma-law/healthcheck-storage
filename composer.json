@@ -1,14 +1,14 @@
 {
-    "name": "illuma-law/healthcheck-pgvector",
-    "description": "Focused pgvector extension health check for Spatie's Laravel Health package.",
+    "name": "illuma-law/healthcheck-storage",
+    "description": "Focused storage extension health check for Spatie's Laravel Health package.",
     "keywords": [
         "illuma-law",
         "laravel",
         "health",
-        "pgvector",
+        "storage",
         "postgres"
     ],
-    "homepage": "https://github.com/illuma-law/healthcheck-pgvector",
+    "homepage": "https://github.com/illuma-law/healthcheck-storage",
     "license": "MIT",
     "authors": [
         {
@@ -40,12 +40,12 @@
     },
     "autoload": {
         "psr-4": {
-            "IllumaLaw\\HealthCheckPgvector\\": "src/"
+            "IllumaLaw\\HealthCheckStorage\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "IllumaLaw\\HealthCheckPgvector\\Tests\\": "tests/"
+            "IllumaLaw\\HealthCheckStorage\\Tests\\": "tests/"
         }
     },
     "scripts": {
@@ -66,7 +66,7 @@
     "extra": {
         "laravel": {
             "providers": [
-                "IllumaLaw\\HealthCheckPgvector\\HealthcheckPgvectorServiceProvider"
+                "IllumaLaw\\HealthCheckStorage\\HealthcheckStorageServiceProvider"
             ]
         }
     },

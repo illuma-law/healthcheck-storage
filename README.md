@@ -1,95 +1,90 @@
-# Healthcheck pgvector
+# Healthcheck storage for Laravel
 
-[![Tests](https://github.com/illuma-law/healthcheck-pgvector/actions/workflows/run-tests.yml/badge.svg)](https://github.com/illuma-law/healthcheck-pgvector/actions)
+[![Tests](https://github.com/illuma-law/healthcheck-storage/actions/workflows/run-tests.yml/badge.svg)](https://github.com/illuma-law/healthcheck-storage/actions)
 [![Packagist License](https://img.shields.io/badge/Licence-MIT-blue)](http://choosealicense.com/licenses/mit/)
-[![Latest Stable Version](https://img.shields.io/packagist/v/illuma-law/healthcheck-pgvector?label=Version)](https://packagist.org/packages/illuma-law/healthcheck-pgvector)
+[![Latest Stable Version](https://img.shields.io/packagist/v/illuma-law/healthcheck-storage?label=Version)](https://packagist.org/packages/illuma-law/healthcheck-storage)
 
-**Focused pgvector extension health check for Spatie's Laravel Health package**
+A focused storage extension health check for Spatie's [Laravel Health](https://spatie.be/docs/laravel-health/v1/introduction) package.
 
-This package provides a single, focused health check that verifies whether the `vector` PostgreSQL extension (pgvector) is installed in your database.
+This package provides a simple, direct health check to verify that the `vector` extension (storage) is properly installed and active in your PostgreSQL database. This is critical for applications that rely on storage for storing AI embeddings and running semantic/similarity searches.
 
-- [Installation](#installation)
-- [Usage](#usage)
-  - [Basic Registration](#basic-registration)
-  - [Fluent Configuration](#fluent-configuration)
-  - [Result States](#result-states)
-- [Testing](#testing)
-- [Credits](#credits)
-- [License](#license)
+## Features
+
+- **Version Detection:** Checks if the `vector` extension is enabled and reports the specific storage version installed.
+- **Configurable Strictness:** Choose whether a missing storage extension should return a Warning (degraded) or a Failure (broken) status for your application.
+- **Query Safety:** Safely handles database connection errors or missing tables, returning a failed state with the exception message instead of crashing the health check suite.
 
 ## Installation
 
-You can install the package via composer:
+Require this package with composer:
 
-```bash
-composer require illuma-law/healthcheck-pgvector
+```shell
+composer require illuma-law/healthcheck-storage
 ```
+
+## Configuration
 
 You can publish the config file with:
 
-```bash
-php artisan vendor:publish --tag="healthcheck-pgvector-config"
+```shell
+php artisan vendor:publish --tag="healthcheck-storage-config"
 ```
 
-## Usage
-
-### TL;DR
+The `healthcheck-storage.php` config file allows you to define whether the check is strictly required by default. 
 
 ```php
-use IllumaLaw\HealthCheckPgvector\PgvectorExtensionCheck;
-use Spatie\Health\Facades\Health;
-
-Health::checks([
-    PgvectorExtensionCheck::new(),
-]);
+return [
+    // If true, the check will FAIL when the extension is missing.
+    // If false, it will generate a WARNING instead.
+    'required' => false,
+];
 ```
+
+## Usage & Integration
+
+Register the check inside your application's health service provider (e.g. `AppServiceProvider` or a dedicated `HealthServiceProvider`), alongside your other Spatie Laravel Health checks:
 
 ### Basic Registration
 
-Register the check inside your application's health service provider or wherever you configure [Spatie Laravel Health](https://github.com/spatie/laravel-health):
-
 ```php
-use IllumaLaw\HealthCheckPgvector\PgvectorExtensionCheck;
+use IllumaLaw\HealthCheckStorage\StorageExtensionCheck;
 use Spatie\Health\Facades\Health;
 
 Health::checks([
-    PgvectorExtensionCheck::new(),
+    StorageExtensionCheck::new(),
 ]);
 ```
 
 ### Fluent Configuration
 
-Override the default behavior using the fluent `required()` method. When `required(true)` is set, the check will fail if the extension is missing. When `false` (default), it produces a warning.
+You can override the config file's default strictness on a per-check basis using the fluent `required()` method. 
 
 ```php
-use IllumaLaw\HealthCheckPgvector\PgvectorExtensionCheck;
+use IllumaLaw\HealthCheckStorage\StorageExtensionCheck;
+use Spatie\Health\Facades\Health;
 
 Health::checks([
-    PgvectorExtensionCheck::new()->required(true),
+    // Make the health check FAIL immediately if storage is missing
+    StorageExtensionCheck::new()->required(true),
 ]);
 ```
 
-### Result States
+### Expected Result States
 
-| State | Condition |
-| :--- | :--- |
-| **Ok** | pgvector is installed — short summary reports the installed version |
-| **Warning** | pgvector is not installed and `required` is `false` |
-| **Failed** | pgvector is not installed and `required` is `true` |
-| **Failed** | The database query throws an exception |
+The check interacts with the Spatie Health dashboard and JSON endpoints using these states:
+
+- **Ok:** The storage extension is installed. The short summary and meta data will include the exact installed version (e.g. `0.7.0`).
+- **Warning:** storage is missing, but `required` is set to `false`.
+- **Failed:** storage is missing and `required` is set to `true`.
+- **Failed (Exception):** The database query to `pg_extension` throws an exception (e.g., database connection down).
 
 ## Testing
 
-The package includes a comprehensive test suite using Pest.
+Run the test suite:
 
-```bash
+```shell
 composer test
 ```
-
-## Credits
-
-- [illuma-law](https://github.com/illuma-law)
-- [All Contributors](../../contributors)
 
 ## License
 

@@ -7,13 +7,13 @@ arch('it will not use debugging functions')
     ->each->not->toBeUsed();
 
 arch('source classes use strict types')
-    ->expect('IllumaLaw\HealthCheckPgvector')
+    ->expect('IllumaLaw\HealthCheckStorage')
     ->toUseStrictTypes();
 
 arch('check class extends Spatie Check')
-    ->expect('IllumaLaw\HealthCheckPgvector\PgvectorExtensionCheck')
+    ->expect('IllumaLaw\HealthCheckStorage\StorageDiskWritabilityCheck')
     ->toExtend('Spatie\Health\Checks\Check');
 
 arch('service provider extends PackageServiceProvider')
-    ->expect('IllumaLaw\HealthCheckPgvector\HealthcheckPgvectorServiceProvider')
+    ->expect('IllumaLaw\HealthCheckStorage\HealthcheckStorageServiceProvider')
     ->toExtend('Spatie\LaravelPackageTools\PackageServiceProvider');
