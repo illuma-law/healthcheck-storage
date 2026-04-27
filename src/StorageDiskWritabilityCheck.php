@@ -67,7 +67,7 @@ final class StorageDiskWritabilityCheck extends Check
         }
 
         $result = Result::make()->meta([
-            'write_read_delete_ms' => $latencies,
+            'write_read_delete_ms'  => $latencies,
             'skipped_unknown_disks' => $skippedUnknown,
         ]);
 
@@ -78,7 +78,7 @@ final class StorageDiskWritabilityCheck extends Check
         if ($latencies === []) {
             return (new Result(Status::skipped(), 'No configured disks were available to probe.'))
                 ->meta([
-                    'write_read_delete_ms' => [],
+                    'write_read_delete_ms'  => [],
                     'skipped_unknown_disks' => $skippedUnknown,
                 ])
                 ->shortSummary('Skipped');
